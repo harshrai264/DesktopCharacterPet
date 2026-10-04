@@ -1,0 +1,211 @@
+<Window x:Class="DesktopCharacterPet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopCharacterPet"
+        mc:Ignorable="d"
+        Title="Desktop Character Pet"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ShowActivated="True"
+        Width="320"
+        Height="192">
+    <Window.Resources>
+        <!-- Dark Theme Brushes -->
+        <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#181a20" />
+        <SolidColorBrush x:Key="MenuBorderBrush" Color="#ff2e43" />
+        <SolidColorBrush x:Key="MenuTextBrush" Color="#ffffff" />
+        <SolidColorBrush x:Key="MenuHoverBrush" Color="#282e3f" />
+        <SolidColorBrush x:Key="MenuSeparatorBrush" Color="#2c303c" />
+
+        <!-- Style for ContextMenu -->
+        <Style TargetType="ContextMenu">
+            <Setter Property="Background" Value="{StaticResource MenuBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource MenuTextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource MenuBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontFamily" Value="Segoe UI, Arial" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="3">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="4" Opacity="0.7" />
+                            </Border.Effect>
+                            <StackPanel IsItemsHost="True" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for Separator -->
+        <Style TargetType="Separator">
+            <Setter Property="Background" Value="{StaticResource MenuSeparatorBrush}" />
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Margin" Value="4,4,4,4" />
+        </Style>
+
+        <!-- Complete Dark Style for MenuItem (fixes white-on-white submenu issue) -->
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="{StaticResource MenuTextBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontFamily" Value="Segoe UI, Arial" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Grid>
+                            <!-- Item background border -->
+                            <Border x:Name="ItemBorder"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="4"
+                                    Padding="10,6,12,6"
+                                    Margin="1,1,1,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter Grid.Column="0"
+                                                      ContentSource="Header"
+                                                      RecognizesAccessKey="True"
+                                                      VerticalAlignment="Center" />
+                                    <!-- Arrow for items with submenus -->
+                                    <Path x:Name="Arrow"
+                                          Grid.Column="1"
+                                          Margin="14,0,0,0"
+                                          VerticalAlignment="Center"
+                                          Fill="#99a2b3"
+                                          Data="M 0 0 L 4 4 L 0 8 Z"
+                                          Visibility="Collapsed" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Submenu Popup (DARK BACKGROUND, CRISTAL CLEAR VISIBILITY) -->
+                            <Popup x:Name="SubMenuPopup"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Placement="Right"
+                                   VerticalOffset="-4"
+                                   HorizontalOffset="2"
+                                   PopupAnimation="Fade">
+                                <Border Background="{StaticResource MenuBackgroundBrush}"
+                                        BorderBrush="{StaticResource MenuBorderBrush}"
+                                        BorderThickness="1.5"
+                                        CornerRadius="6"
+                                        Padding="3"
+                                        MinWidth="220">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="4" Opacity="0.7" />
+                                    </Border.Effect>
+                                    <StackPanel IsItemsHost="True" />
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- Show arrow if item has sub-items -->
+                            <Trigger Property="HasItems" Value="True">
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <!-- Hover Highlight -->
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource MenuHoverBrush}" />
+                                <Setter Property="Foreground" Value="#ffffff" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#667085" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="MenuPause" Header="⏸ Pause Battle" Click="MenuPause_Click" />
+            <MenuItem x:Name="MenuResume" Header="▶ Resume Battle" Click="MenuResume_Click" />
+            <Separator />
+            <MenuItem Header="⚔️ Battle Flight Paths (4 Altitudes)">
+                <MenuItem Header="🔄 Auto-Cycle All 4 Paths" Tag="AutoCycleAll" Click="MenuBattlePath_Click" />
+                <MenuItem Header="💥 Path 1: Ground Clash (Above Taskbar)" Tag="GroundClash" Click="MenuBattlePath_Click" />
+                <MenuItem Header="⚡ Path 2: Mid-Air Dogfight (Center Screen)" Tag="MidAirDogfight" Click="MenuBattlePath_Click" />
+                <MenuItem Header="🌌 Path 3: Sky Strike (Top Screen)" Tag="SkyStrike" Click="MenuBattlePath_Click" />
+                <MenuItem Header="🌊 Path 4: Dynamic Wave (Swoop Dive)" Tag="DynamicWave" Click="MenuBattlePath_Click" />
+            </MenuItem>
+            <MenuItem Header="🦸 Marvel Heroes &amp; Characters">
+                <MenuItem Header="💥 Iron Man vs Thanos (Epic Clash)" Tag="Assets/ironman_vs_thanos.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="🕷️ Spider-Man (Web-Slinger Leap)" Tag="Assets/spiderman.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="⚡ Thor (God of Thunder Lightning)" Tag="Assets/thor_lightning.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="🟢 The Incredible Hulk (Hulk Smash!)" Tag="Assets/hulk_smash.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="🛡️ Captain America (Shield Ricochet)" Tag="Assets/captain_america.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="⚡ Iron Man Solo (Repulsor Beam)" Tag="Assets/ironman_beam.gif" Click="MenuChangeCharacter_Click" />
+                <Separator />
+                <MenuItem Header="💀 Walking Skeleton (Transparent)" Tag="Assets/white_skeleton_walk.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="⚡ Pikachu / Zappy" Tag="Assets/pikachu_walk.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="🦊 Red Fox" Tag="Assets/fox_walk.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="🐶 Akita Dog" Tag="Assets/dog_walk.gif" Click="MenuChangeCharacter_Click" />
+                <MenuItem Header="🍃 Totoro" Tag="Assets/totoro_walk.gif" Click="MenuChangeCharacter_Click" />
+            </MenuItem>
+            <MenuItem Header="⚡ Combat Speed">
+                <MenuItem Header="🚶 Patrol Speed (2.5 px)" Tag="2.5" Click="MenuChangeSpeed_Click" />
+                <MenuItem Header="🏃 Fast Combat (4.5 px)" Tag="4.5" Click="MenuChangeSpeed_Click" />
+                <MenuItem Header="🚀 Super Sonic Blitz (7.0 px)" Tag="7.0" Click="MenuChangeSpeed_Click" />
+            </MenuItem>
+            <MenuItem Header="📐 Resize Hero (or Scroll Mouse Wheel)">
+                <MenuItem Header="Compact (240x144)" Tag="240" Click="MenuChangeSize_Click" />
+                <MenuItem Header="Standard (320x192)" Tag="320" Click="MenuChangeSize_Click" />
+                <MenuItem Header="Large (420x252)" Tag="420" Click="MenuChangeSize_Click" />
+                <MenuItem Header="Giant Cinema (540x324)" Tag="540" Click="MenuChangeSize_Click" />
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="❌ Exit Application" Click="MenuExit_Click" />
+        </ContextMenu>
+    </Window.ContextMenu>
+
+    <Grid Background="#01000000" 
+          MouseLeftButtonDown="Window_MouseLeftButtonDown"
+          MouseWheel="Window_MouseWheel">
+        <!-- Floating Comic Burst Effect Text -->
+        <TextBlock x:Name="ComicBurstText"
+                   Text="💥 POW!"
+                   Foreground="#ffd700"
+                   FontWeight="ExtraBold"
+                   FontSize="22"
+                   FontFamily="Impact, Segoe UI Black"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Margin="0,5,0,0"
+                   Opacity="0"
+                   IsHitTestVisible="False">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="#ff1133" BlurRadius="8" ShadowDepth="0" />
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <!-- Main Character Image -->
+        <Image x:Name="CharacterImage"
+               Stretch="Uniform"
+               RenderOptions.BitmapScalingMode="HighQuality"
+               Cursor="SizeAll"
+               RenderTransformOrigin="0.5, 0.5">
+            <Image.RenderTransform>
+                <ScaleTransform x:Name="CharacterFlipTransform" ScaleX="1" ScaleY="1" />
+            </Image.RenderTransform>
+        </Image>
+    </Grid>
+</Window>

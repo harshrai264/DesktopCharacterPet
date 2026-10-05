@@ -1,6 +1,6 @@
 # 🦸 Desktop Character Pet (Marvel Edition)
 
-> An animated, transparent Windows desktop overlay application featuring **Marvel superheroes & villains** battling across your screen above all applications, built with **C# and .NET 10 WPF**.
+> An animated, transparent Windows desktop overlay application featuring **Marvel superheroes & villains** battling across your screen above all applications, built with **C# and .NET 8 (LTS) WPF** with full support for **Windows 10, Windows 11, and lower Windows versions**.
 
 ---
 
@@ -65,8 +65,8 @@ You do **not** need to install Visual Studio or .NET to run this application!
 ## 💻 Building from Source
 
 ### Prerequisites
-* Windows 10 / 11 (x64)
-* [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+* Windows 10 / 11 (x64) or Windows 7/8.1 with modern .NET runtime
+* [.NET 8 SDK (LTS) or higher](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 ### Run in Development
 ```powershell
@@ -80,7 +80,7 @@ dotnet publish -c Release
 ```
 The output executable will be generated at:
 ```text
-DesktopCharacterPet\bin\Release\net10.0-windows\win-x64\publish\DesktopCharacterPet.exe
+DesktopCharacterPet\bin\Release\net8.0-windows\win-x64\publish\DesktopCharacterPet.exe
 ```
 
 ---
